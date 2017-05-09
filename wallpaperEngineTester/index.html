@@ -1,0 +1,68 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+    <title>tjhrulz's Wallpaper Engine Tester</title>
+    <script type="application/javascript">
+        var reconnect;
+
+        function open() {
+            try {
+                var url = "ws://127.0.0.1:58932/";
+                ws = new WebSocket(url);
+                ws.onopen = onOpen;
+                ws.onclose = onClose;
+                ws.onmessage = onMessage;
+                ws.onerror = onError;
+
+                //document.getElementById('content').innerHTML += "\nOpening websocket";
+            } catch (error) {
+                //document.getElementById('content').innerHTML += "\nError:" + error;
+            }
+        }
+
+        var onOpen = function() {
+            //document.getElementById('content').innerHTML += "\nOpened websocket";
+            connected = true;
+            clearTimeout(reconnect);
+        };
+
+        var onClose = function() {
+            //document.getElementById('content').innerHTML += "\nClosed websocket";
+            connected = false;
+            reconnect = setTimeout(function() {
+                open();
+            }, 5000);
+        };
+
+        var onMessage = function(event) {
+            document.getElementById('content').innerHTML += "\nMessage received:" + event.data;
+            document.getElementById("iframe").src = "https://www.youtube.com/results?search_query=" + event.data.replace(" ", "+");
+        };
+
+        var onError = function(event) {
+            if (typeof event.data != 'undefined') {
+                //document.getElementById('content').innerHTML += "\nWebsocket Error:" + event.data;
+            }
+        };
+
+        function sendMessage(stringToSend) {
+            if (connected) {
+                ws.send(stringToSend);
+            }
+        }
+    </script>
+</head>
+
+<body>
+  <button type="button" onclick="sendMessage('Hello world!')">Click Me!</button>
+  <div id="content">Info:</div>
+  <iframe height=500 width=1000 id="iframe" src="https://www.youtube.com/embed/t706ljMINw0?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+  <script type="text/javascript">
+    open();
+  </script>
+</body>
+
+</html>
