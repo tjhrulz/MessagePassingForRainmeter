@@ -17,6 +17,9 @@ page.viewportSize = {
 	height: 800
 };
 //page.settings.userAgent = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";
+
+//@TODO Use dynamic programming for url's
+
 page.open(address, function(status) {
 	if (status !== "success") {
 		console.log("ERROR");

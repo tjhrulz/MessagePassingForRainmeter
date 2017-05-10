@@ -50,10 +50,11 @@
             videoUrl = event.data
             videoUrl = videoUrl.substring(videoUrl.lastIndexOf(matchString) + matchString.length, videoUrl.length - 1)
 
-            newSource = "https://www.youtube.com/embed/" + videoUrl + "?rel=0&amp;controls=0&amp;showinfo=0;autoplay=1";
-            document.getElementById("iframe").src = newSource;
+            //newSource = "https://www.youtube.com/embed/" + videoUrl + "?rel=0&amp;controls=0&amp;showinfo=0;autoplay=1";
+            //document.getElementById("iframe").src = newSource;
+            //document.getElementById('content').innerHTML = "New URL:" + newSource;
 
-            document.getElementById('content').innerHTML = "New URL:" + newSource;
+            player.loadVideoById(videoUrl, 2)
         };
 
         var onError = function(event) {
@@ -70,13 +71,60 @@
     </script>
 </head>
 
-<body>
-  <button type="button" onclick="sendMessage('Hello world!')">Click Me!</button>
-  <div id="content">Info:</div>
-  <iframe height=540 width=960 id="iframe" src=https://www.youtube.com/embed/playlist?playnext=1&list=PL21A7A915E7020E73&rel=0&amp;controls=0&amp;showinfo=0 frameborder="0" allowfullscreen></iframe>
-  <script type="text/javascript">
-    open();
-  </script>
+<body style="padding: 0px; margin: 0px; background-color: DimGray;">
+    <div id="player"></div>
+
+    <script type="text/javascript">
+        // 2. This code loads the IFrame Player API code asynchronously.
+        var tag = document.createElement('script');
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // 3. This function creates an <iframe> (and YouTube player)
+        //    after the API code downloads.
+        var player;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '1080',
+                width: '1920',
+                videoId: 'xJ6IoIBohbM',
+                playerVars: {
+                    'autoplay': 0,
+                    'showinfo': 0,
+                    'controls': 0,
+                    'rel': 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+            player.mute();
+        }
+
+        // 4. The API will call this function when the video player is ready.
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
+
+        // 5. The API calls this function when the player's state changes.
+        //    The function indicates that when playing a video (state=1),
+        //    the player should play for six seconds and then stop.
+        var done = false;
+
+        function onPlayerStateChange(event) {
+            player.mute();
+            if (event.data == YT.PlayerState.PLAYING && !done) {
+                //@TODO send video has started back to rainemter
+            }
+            //@TODO Send video has been paused back to rainmeter
+        }
+
+        open();
+    </script>
 </body>
 
 </html>
