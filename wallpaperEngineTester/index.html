@@ -38,8 +38,22 @@
         };
 
         var onMessage = function(event) {
-            document.getElementById('content').innerHTML += "\nMessage received:" + event.data;
-            document.getElementById("iframe").src = "https://www.youtube.com/results?search_query=" + event.data.replace(" ", "+");
+            //document.getElementById('content').innerHTML = "\nMessage received:" + event.data;
+
+            //Gets the href of X video in search page
+            //document.getElementsByClassName("style-scope ytd-two-column-search-results-renderer")[1].children[0].children[1].children[0].children[2].children[X].children[0].children[0].children[0].href
+
+            //https://www.youtube.com/watch?v=Jo9wJaFl1Ww
+            //"https://www.youtube.com/embed/Jo9wJaFl1Ww?rel=0&amp;controls=0&amp;showinfo=0
+
+            matchString = "watch?v=";
+            videoUrl = event.data
+            videoUrl = videoUrl.substring(videoUrl.lastIndexOf(matchString) + matchString.length, videoUrl.length - 1)
+
+            newSource = "https://www.youtube.com/embed/" + videoUrl + "?rel=0&amp;controls=0&amp;showinfo=0;autoplay=1";
+            document.getElementById("iframe").src = newSource;
+
+            document.getElementById('content').innerHTML = "New URL:" + newSource;
         };
 
         var onError = function(event) {
@@ -59,7 +73,7 @@
 <body>
   <button type="button" onclick="sendMessage('Hello world!')">Click Me!</button>
   <div id="content">Info:</div>
-  <iframe height=500 width=1000 id="iframe" src="https://www.youtube.com/embed/t706ljMINw0?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+  <iframe height=540 width=960 id="iframe" src=https://www.youtube.com/embed/playlist?playnext=1&list=PL21A7A915E7020E73&rel=0&amp;controls=0&amp;showinfo=0 frameborder="0" allowfullscreen></iframe>
   <script type="text/javascript">
     open();
   </script>
