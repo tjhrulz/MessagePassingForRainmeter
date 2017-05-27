@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+//using Newtonsoft.Json;
+//using Newtonsoft.Json.Linq;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using Rainmeter;
 
-namespace WebsocketForRainmeter
+namespace MessagePassing
 {
-    //@TODO Write plugin to send out websocket
-    //@TODO Write Wallpaper engine to accept websocket
-    //@TODO Remove reference to GPMDP because I used that code because I was lazy
-    //@TODO Decide if multiple connections is okay or not or just only use one port #
+    //@TODO Write plugin to use multiple services and accept custom port configurations
 
     internal class Measure
     {
         public static WebSocketServer wssv;
         public static string wsMessages = "";
         public static int instanceCount = 0;
+        private string myService = "/";
 
         public class MessagePassing : WebSocketBehavior
         {
@@ -57,18 +55,28 @@ namespace WebsocketForRainmeter
         {
             //@TODO Use this port
             int port = api.ReadInt("Port", 58932);
+
+            myService = "/" + api.ReadString("Name", "");
+            wssv.AddWebSocketService<MessagePassing>(myService);
         }
 
         internal void ExecuteBang(string args)
         {
-            string bang = args.ToLowerInvariant();
-            if (bang.Equals("send"))
+            foreach (string service in wssv.WebSocketServices.Paths)
             {
-
-            }
-            else
-            {
-                wssv.WebSocketServices.Broadcast(args);
+                if (service == myService)
+                {
+                    WebSocketServiceHost serviceToMessage;
+                    System.Diagnostics.Debug.Write(wssv.WebSocketServices.TryGetServiceHost(myService, out serviceToMessage));
+                    serviceToMessage.Sessions.Broadcast(args);
+                }
+                //Always broadcast to base case //TODO Decide if I want to keep this
+                else if (service == "/")
+                {
+                    WebSocketServiceHost serviceToMessage;
+                    System.Diagnostics.Debug.Write(wssv.WebSocketServices.TryGetServiceHost(myService, out serviceToMessage));
+                    serviceToMessage.Sessions.Broadcast(args);
+                }
             }
         }
 

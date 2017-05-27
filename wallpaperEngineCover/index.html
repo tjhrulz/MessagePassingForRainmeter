@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class=''>
+
+<head>
+    <title>tjhrulz's Wallpaper Engine Cover Tester</title>
+
+    <style type="text/css">
+    body {
+            /* set margin to 0 and overflow to hidden, to go fullscreen */
+            margin: 0;
+            overflow: hidden;
+        }
+    }
+    </style>
+
+    <script src='//production-assets.codepen.io/assets/editor/live/console_runner-5710c30fb566082d9fcb6e7d97ee7e3f2a326128c9f334a4231b6fd752b29965.js'></script>
+    <script src='//production-assets.codepen.io/assets/editor/live/events_runner-d5e4bf42585b8da8c18f7d963dbfc17cd66a79aa586c9448c4de8d6952ee9d97.js'></script>
+    <script src='//production-assets.codepen.io/assets/editor/live/css_live_reload_init-25d1423d5d6fb975e7d61832d2c061422a94963ca446583b965dfc5569147311.js'></script>
+    <meta charset='UTF-8'>
+    <meta name="robots" content="noindex">
+    <link rel="shortcut icon" type="image/x-icon" href="//production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico" />
+    <link rel="mask-icon" type="" href="//production-assets.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111" />
+    <link rel="canonical" href="http://codepen.io/anon/pen/eNVWWB" />
+
+    <style class="cp-pen-styles"></style>
+
+    <script type="application/javascript">
+        //Websocket code
+        var reconnect;
+        var lastID = "xJ6IoIBohbM";
+
+        function open() {
+            try {
+                var url = "ws://127.0.0.1:58932/";
+                ws = new WebSocket(url);
+                ws.onopen = onOpen;
+                ws.onclose = onClose;
+                ws.onmessage = onMessage;
+                ws.onerror = onError;
+
+                //document.getElementById('content').innerHTML += "\nOpening websocket";
+            } catch (error) {
+                //document.getElementById('content').innerHTML += "\nError:" + error;
+            }
+        }
+
+        var onOpen = function() {
+            //document.getElementById('content').innerHTML += "\nOpened websocket";
+            connected = true;
+            clearTimeout(reconnect);
+        };
+
+        var onClose = function() {
+            //document.getElementById('content').innerHTML += "\nClosed websocket";
+            connected = false;
+            reconnect = setTimeout(function() {
+                open();
+            }, 5000);
+        };
+
+        var onMessage = function(event) {
+            if (!event.data.includes("youtube.com") && (event.data.includes("png") || event.data.includes("jpg") || event.data.includes("bmp"))) {
+
+                //vec3 newLight = vec3(Math.random.toFixed(2), Math.random.toFixed(2), Math.random.toFixed(2));
+                //vec3 newTop = vec3(Math.random.toFixed(2), Math.random.toFixed(2), Math.random.toFixed(2));
+                //vec3 NewBot = vec3(Math.random.toFixed(2), Math.random.toFixed(2), Math.random.toFixed(2));
+            }
+        };
+
+        var onError = function(event) {
+            if (typeof event.data != 'undefined') {
+                //document.getElementById('content').innerHTML += "\nWebsocket Error:" + event.data;
+            }
+        };
+
+        function sendMessage(stringToSend) {
+            if (connected) {
+                ws.send(stringToSend);
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+    <div id="container"></div>
+    <script id="vertexShader" type="x-shader/x-vertex">
+
+        void main() { gl_Position = vec4( position, 1.0 ); }
+
+    </script>
+
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        uniform vec2 iResolution; uniform float iGlobalTime; vec2 uv; float GodRay(float scale,float threshold,float speed,float angle){ float value = pow(sin((uv.x+uv.y*angle+iGlobalTime*speed)*scale),6.0); value+=float(threshold
+        <value); //return float(threshold<(sin((uv.x+uv.y*angle+iGlobalTime*speed)*scale))); return clamp(value,0.0,1.0); } void mainImage( out vec4 fragColor, in vec2 fragCoord ) { uv=f ragCoord.xy / iResolution.xy; float light=G odRay(22.0,0.5,-0.003,0.2)*
+            0.3; light+=GodRay(47.0, 0.99, 0.02, 0.2)* 0.1; light+=GodRay(25.0,0.9, -0.01, 0.2)* 0.2; light+=GodRay(52.0, 0.4, 0.0001, 0.2)* 0.1; light+=GodRay(49.0, 0.4, 0.0003, 0.2)* 0.1; light+=GodRay(57.0, 0.4, -0.0001,0.2)* 0.1; light+=GodRay(200.0,0.8,
+            -0.0001,0.2)* 0.05; light-=pow((1.0-uv.y)*0.7,0.8); light=max(light,0.0); //Colors to change on new info vec3 LightColor=v ec3(0.67,0.98,0.76); vec3 WaterTop=v ec3(0.86,0.38,0.62); vec3 WaterBot=v ec3(0.91,0.60,0.70); vec3 WaterColor=W aterBot+uv.y*(WaterTop-WaterBot);
+            vec3 Color=W aterColor+light*(LightColor-WaterColor); fragColor=v ec4(Color,1.0); } void main(void) { //uv is between 0 and 1 vec2 uv=g l_FragCoord.xy / iResolution.xy; vec2 delta=1 .0 / iResolution.xy; // gl_FragColor=v ec4(sin(iGlobalTime),
+            uv.x, uv.y ,1.0); mainImage(gl_FragColor,gl_FragCoord.xy); } </script>
+            <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-58d22c749295bca52f487966e382a94a495ac103faca9206cbd160bdf8aedf2a.js'></script>
+            <script src='http://threejs.org/build/three.min.js'></script>
+            <script>
+                var container;
+                var camera, scene, renderer;
+                var uniforms;
+                var startTime;
+
+                init();
+                animate();
+
+                function init() {
+
+                    container = document.getElementById('container');
+
+                    startTime = Date.now();
+                    camera = new THREE.Camera();
+                    camera.position.z = 1;
+
+                    scene = new THREE.Scene();
+
+                    var geometry = new THREE.PlaneBufferGeometry(2, 2);
+
+                    uniforms = {
+                        iGlobalTime: {
+                            type: "f",
+                            value: 1.0
+                        },
+                        iResolution: {
+                            type: "v2",
+                            value: new THREE.Vector2()
+                        }
+                    };
+
+                    var material = new THREE.ShaderMaterial({
+
+                        uniforms: uniforms,
+                        vertexShader: document.getElementById('vertexShader').textContent,
+                        fragmentShader: document.getElementById('fragmentShader').textContent
+
+                    });
+
+                    var mesh = new THREE.Mesh(geometry, material);
+                    scene.add(mesh);
+
+                    renderer = new THREE.WebGLRenderer();
+                    container.appendChild(renderer.domElement);
+
+                    onWindowResize();
+
+                    window.addEventListener('resize', onWindowResize, false);
+
+                }
+
+                function onWindowResize(event) {
+
+                    uniforms.iResolution.value.x = window.innerWidth;
+                    uniforms.iResolution.value.y = window.innerHeight;
+
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+
+                }
+
+                function animate() {
+
+                    requestAnimationFrame(animate);
+                    render();
+
+                }
+
+                function render() {
+
+                    var currentTime = Date.now();
+                    uniforms.iGlobalTime.value = (currentTime - startTime) * 0.001;
+                    renderer.render(scene, camera);
+
+                }
+                //# sourceURL=pen.js
+            </script>
+</body>
+
+</html>

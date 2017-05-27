@@ -7,10 +7,11 @@
     <title>tjhrulz's Wallpaper Engine Tester</title>
     <script type="application/javascript">
         var reconnect;
+        var lastID = "xJ6IoIBohbM";
 
         function open() {
             try {
-                var url = "ws://127.0.0.1:58932/";
+                var url = "ws://127.0.0.1:58932/MVYoutubeVideo";
                 ws = new WebSocket(url);
                 ws.onopen = onOpen;
                 ws.onclose = onClose;
@@ -45,16 +46,19 @@
 
             //https://www.youtube.com/watch?v=Jo9wJaFl1Ww
             //"https://www.youtube.com/embed/Jo9wJaFl1Ww?rel=0&amp;controls=0&amp;showinfo=0
+            if (event.data.includes("youtube.com")) {
+                matchString = "watch?v=";
+                videoID = event.data
+                videoID = videoID.substring(videoID.lastIndexOf(matchString) + matchString.length, videoID.length - 1)
 
-            matchString = "watch?v=";
-            videoUrl = event.data
-            videoUrl = videoUrl.substring(videoUrl.lastIndexOf(matchString) + matchString.length, videoUrl.length - 1)
-
-            //newSource = "https://www.youtube.com/embed/" + videoUrl + "?rel=0&amp;controls=0&amp;showinfo=0;autoplay=1";
-            //document.getElementById("iframe").src = newSource;
-            //document.getElementById('content').innerHTML = "New URL:" + newSource;
-
-            player.loadVideoById(videoUrl, 2)
+                //newSource = "https://www.youtube.com/embed/" + videoID + "?rel=0&amp;controls=0&amp;showinfo=0;autoplay=1";
+                //document.getElementById("iframe").src = newSource;
+                //document.getElementById('content').innerHTML = "New URL:" + newSource;
+                if (lastID !== videoID) {
+                    player.loadVideoById(videoID, 4);
+                    lastID = videoID;
+                }
+            }
         };
 
         var onError = function(event) {

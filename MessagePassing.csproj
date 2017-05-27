@@ -9,8 +9,8 @@
     <ProjectGuid>{adcd8b21-4fc5-41c2-8acc-4467893ecce7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WebsocketForRainmeter</RootNamespace>
-    <AssemblyName>WebsocketForRainmeter</AssemblyName>
+    <RootNamespace>MessagePassing</RootNamespace>
+    <AssemblyName>MessagePassing</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -94,7 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="WebsocketForRainmeter.cs" />
+    <Compile Include="MessagePassing.cs" />
     <Compile Include="$(SolutionDir).\API\RainmeterAPI.cs" />
   </ItemGroup>
   <ItemGroup>
