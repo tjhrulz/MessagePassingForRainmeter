@@ -71,19 +71,26 @@
             } else if (event.data.toLowerCase() == "1") {
                 player.playVideo();
             } else if (!event.data.isNaN) {
+
+                var timeS = event.data;
+                if (event.data.includes(":")) {
+                    timeS = parseInt(event.data.substring(event.data.indexOf(":") + 1));
+                    timeS += 60*parseInt(event.data.substring(0, event.data.indexOf(":")));
+                }
+
                 if (player.getPlayerState() == 1 || player.getPlayerState() == 2) {
                     var currTimeYoutube = player.getCurrentTime();
-                    var currTimeRainmeter = parseFloat(event.data);
+                    var currTimeRainmeter = parseFloat(timeS);
 
                     //console.log(currTimeRainmeter + ":" + currTimeYoutube);
-                        if (currTimeYoutube > currTimeRainmeter + maxTimeDifference || currTimeYoutube < currTimeRainmeter - maxTimeDifference) {
-                            //@TODO check if video is buffered that far, if it is not then maybe set it a bit ahead of actual time
-                            player.seekTo(currTimeRainmeter + delayTime, true);
-                                player.playVideo();
-                        } else if (currTimeYoutube > currTimeRainmeter + minTimeDifference || currTimeYoutube < currTimeRainmeter - minTimeDifference) {
-                            player.seekTo(currTimeRainmeter, false);
-                                player.playVideo();
-                        }
+                    if (currTimeYoutube > currTimeRainmeter + maxTimeDifference || currTimeYoutube < currTimeRainmeter - maxTimeDifference) {
+                        //@TODO check if video is buffered that far, if it is not then maybe set it a bit ahead of actual time
+                        player.seekTo(currTimeRainmeter + delayTime, true);
+                        player.playVideo();
+                    } else if (currTimeYoutube > currTimeRainmeter + minTimeDifference || currTimeYoutube < currTimeRainmeter - minTimeDifference) {
+                        player.seekTo(currTimeRainmeter, false);
+                        player.playVideo();
+                    }
                 }
             } else {
                 console.log("Unknown data:" + event.data);

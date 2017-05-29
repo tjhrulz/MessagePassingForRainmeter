@@ -49,6 +49,11 @@ Measure=Plugin
 Plugin=SpotifyPlugin
 Type=Position
 
+[MeasurePositionDec]
+Measure=Plugin
+Plugin=SpotifyPlugin
+Type=Position
+
 [MeasureDuration]
 Measure=Plugin
 Plugin=SpotifyPlugin

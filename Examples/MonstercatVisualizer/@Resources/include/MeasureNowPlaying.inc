@@ -50,6 +50,12 @@ Plugin=NowPlaying
 PlayerName=#PlayerName#
 PlayerType=Position
 
+;Redundant, just here to fix a spotify related bug
+[MeasurePositionDec]
+Measure=Calc
+Formula=MeasurePosition
+DynamicVariables=1
+
 [MeasureDuration]
 Measure=Plugin
 Plugin=NowPlaying

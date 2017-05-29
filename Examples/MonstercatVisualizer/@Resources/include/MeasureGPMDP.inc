@@ -47,6 +47,12 @@ Plugin=GPMDPPlugin
 PlayerInfo=Position
 IncludeMS=1
 
+;Redundant, just here to fix a spotify related bug
+[MeasurePositionDec]
+Measure=Calc
+Formula=MeasurePosition
+DynamicVariables=1
+
 [MeasureDuration]
 Measure=Plugin
 Plugin=GPMDPPlugin
