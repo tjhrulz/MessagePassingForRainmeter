@@ -16,7 +16,7 @@ namespace MessagePassing
     {
         //Used to keep track of skin ID's and the commands for on open, close, and message in a nicer manner
         //Note also takes the measure so that any skins that use dynamic variables do not create a new command on refresh
-        class ExecuteCommand
+        public class ExecuteCommand
         {
             public ExecuteCommand(IntPtr skin, string measure, string commandOnOpen, string commandOnClose, string commandOnMessage)
             {
@@ -45,10 +45,12 @@ namespace MessagePassing
 
         //@TODO Add culling of skins that no longer exist (Or at least check if skin already exists so that dynamic variables can at least work)
         //A List of current services open and close command strings and the corresponding skin intptr in order of services
-        private static List<List<ExecuteCommand>> commands = new List<List<ExecuteCommand>>();
+        public static List<List<ExecuteCommand>> commands = new List<List<ExecuteCommand>>();
 
         //Still keep a copy of the measures service for future bangs
         private string myService = "/";
+        public int myServiceID = 0;
+        public IntPtr mySkin = IntPtr.Zero;
 
         public class MessagePassing : WebSocketBehavior
         {
@@ -162,7 +164,7 @@ namespace MessagePassing
             string newCommandOnOpen = api.ReadString("OnOpen", "");
             string newCommandOnClose = api.ReadString("OnClose", "");
             string newCommandOnMessage = api.ReadString("OnMessage", "");
-            IntPtr mySkin = api.GetSkin();
+            mySkin = api.GetSkin();
             string myMeasure = api.GetMeasureName();
 
             bool isNewService = true;
@@ -175,10 +177,11 @@ namespace MessagePassing
                 {
                     isNewService = false;
                     bool isNewSkin = true;
+                    myServiceID = serviceLoc;
 
                     //Check if a skin with the same ID already exists if it does then just update instead of making a new skin
                     //Note: we just compare against onOpen, so make sure it is safe to assume they are always in the same loc from same skin @TODO Actually lets just merge execute command to have an open and a close command Edit: Mostly done
-                    foreach(ExecuteCommand command in commands[serviceLoc])
+                    foreach (ExecuteCommand command in commands[serviceLoc])
                     {
                         //Check if from the same skin
                         if (command.Skin == mySkin)
@@ -234,14 +237,21 @@ namespace MessagePassing
 
         internal virtual double Update()
         {
-
-            return 0.0;
+            int connectedClientCount = 0;
+            foreach(WebSocketServiceHost service in wssv.WebSocketServices.Hosts)
+            {
+                if(service.Path == myService)
+                {
+                    connectedClientCount = service.Sessions.Count;
+                }
+            }
+            return connectedClientCount;
         }
 
         internal string GetString()
         {
 
-            return "";
+            return null;
         }
 
 
@@ -260,6 +270,17 @@ namespace MessagePassing
         [DllExport]
         public static void Finalize(IntPtr data)
         {
+            Measure measure = (Measure)GCHandle.FromIntPtr(data).Target;
+            List<List<Measure.ExecuteCommand>> toRemove = new List<List<Measure.ExecuteCommand>>();
+
+            for(int i = Measure.commands[measure.myServiceID].Count -1; i >=0; i--)
+            {
+                if(Measure.commands[measure.myServiceID][i].Skin == measure.mySkin)
+                {
+                    Measure.commands[measure.myServiceID].RemoveAt(i);
+                }
+            }
+
             Measure.instanceCount--;
             if (Measure.instanceCount == 0)
             {
