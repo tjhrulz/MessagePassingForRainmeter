@@ -1,0 +1,119 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+    <title>tjhrulz's Wallpaper Engine Tester</title>
+    <script src="./Vibrant.js"></script>
+
+    <script type="application/javascript">
+        var reconnect;
+
+        function open() {
+            try {
+                var url = "ws://127.0.0.1:58932/MVCover";
+                ws = new WebSocket(url);
+                ws.onopen = onOpen;
+                ws.onclose = onClose;
+                ws.onmessage = onMessage;
+                ws.onerror = onError;
+
+                //document.getElementById('content').innerHTML += "\nOpening websocket";
+            } catch (error) {
+                //document.getElementById('content').innerHTML += "\nError:" + error;
+            }
+        }
+
+        var onOpen = function() {
+            //document.getElementById('content').innerHTML += "\nOpened websocket";
+            connected = true;
+            clearTimeout(reconnect);
+        };
+
+        var onClose = function() {
+            //document.getElementById('content').innerHTML += "\nClosed websocket";
+            connected = false;
+            reconnect = setTimeout(function() {
+                open();
+            }, 5000);
+        };
+
+        var onMessage = function(event) {
+            var img = document.createElement('img');
+            img.setAttribute('src', event.data);
+            img.setAttribute('crossOrigin', '');
+
+            img.addEventListener('load', function() {
+                var vibrant = new Vibrant(img);
+                var swatches = vibrant.swatches()
+                for (var swatch in swatches) {
+                    if (swatches.hasOwnProperty(swatch) && swatches[swatch]) {
+                        if (swatch == "Vibrant") {
+                            console.log("Vibrant", swatch, swatches[swatch].getHex());
+                            document.getElementById("Vibrant").style.backgroundColor = swatches[swatch].getHex();
+                        } else if (swatch == "Muted") {
+                            console.log("Muted", swatch, swatches[swatch].getHex());
+                            document.getElementById("Muted").style.backgroundColor = swatches[swatch].getHex();
+                        } else if (swatch == "DarkVibrant") {
+                            console.log("DarkVibrant", swatch, swatches[swatch].getHex());
+                            document.getElementById("DarkVibrant").style.backgroundColor = swatches[swatch].getHex();
+                        } else if (swatch == "DarkMuted") {
+                            console.log("DarkMuted", swatch, swatches[swatch].getHex());
+                            document.getElementById("DarkMuted").style.backgroundColor = swatches[swatch].getHex();
+                        } else if (swatch == "LightVibrant") {
+                            console.log("LightVibrant", swatch, swatches[swatch].getHex());
+                            document.getElementById("LightVibrant").style.backgroundColor = swatches[swatch].getHex();
+                        }
+                    }
+                }
+            });
+        };
+
+        var onError = function(event) {
+            if (typeof event.data != 'undefined') {
+                //document.getElementById('content').innerHTML += "\nWebsocket Error:" + event.data;
+            }
+        };
+
+        function sendMessage(stringToSend) {
+            if (connected) {
+                ws.send(stringToSend);
+            }
+        }
+        open();
+    </script>
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+            border: none;
+        }
+
+        img,
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        div {
+            width: 100px;
+            height: 100px;
+            px
+        }
+    </style>
+</head>
+
+<body>
+</body>
+<div id="Vibrant" style="background-color: #FF850A;"></div>
+<div id="Muted" style="background-color: #FF850A;"></div>
+<div id="DarkVibrant" style="background-color: #FF850A;"></div>
+<div id="DarkMuted" style="background-color: #FF850A;"></div>
+<div id="LightVibrant" style="background-color: #FF850A;"></div>
+
+</html>
