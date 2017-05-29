@@ -6,6 +6,7 @@ using WebSocketSharp;
 using WebSocketSharp.Server;
 using Rainmeter;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace MessagePassing
 {
@@ -13,22 +14,24 @@ namespace MessagePassing
 
     internal class Measure
     {
-        //Used to keep track of skin ID's and the commands for open and close in a nicer manner
+        //Used to keep track of skin ID's and the commands for on open, close, and message in a nicer manner
         //Note also takes the measure so that any skins that use dynamic variables do not create a new command on refresh
         class ExecuteCommand
         {
-            public ExecuteCommand(IntPtr skin, string measure, string commandOnOpen, string commandOnClose)
+            public ExecuteCommand(IntPtr skin, string measure, string commandOnOpen, string commandOnClose, string commandOnMessage)
             {
                 this.Skin = skin;
                 this.Measure = measure;
                 this.CommandOnOpen = commandOnOpen;
                 this.CommandOnClose = commandOnClose;
+                this.CommandOnMessage = commandOnMessage;
             }
 
             public IntPtr Skin { get; set; }
             public string Measure { get; set; }
             public string CommandOnOpen { get; set; }
             public string CommandOnClose { get; set; }
+            public string CommandOnMessage { get; set; }
         }
 
 
@@ -51,9 +54,28 @@ namespace MessagePassing
 
         public class MessagePassing : WebSocketBehavior
         {
+            //@TODO I can't just fire the message on message due to the skin may not be updated, I either need a way to declare in the bang when to replace text or have this fire after the measure has seen an update cycle
             protected override void OnMessage(MessageEventArgs e)
             {
-                wsMessages = e.Data;
+                //Count number of services
+                int i = 0;
+                var serviceClone = services;
+
+                foreach (string service in services)
+                {
+                    if (service == this.Context.RequestUri.AbsolutePath)
+                    {
+                        //Foreach command in the same service
+                        foreach (ExecuteCommand command in commands[i])
+                        {
+                            //Use regular experssion to replace $Message$ since str.replace can only be case sensitive
+                            string replacedCommand = Regex.Replace(command.CommandOnMessage, "\\$message\\$", e.Data, RegexOptions.IgnoreCase);
+                            //command.CommandOnMessage.Replace("$message$", e.Data);
+                            API.Execute(command.Skin, replacedCommand);
+                        }
+                    }
+                    i++;
+                }
             }
 
             protected override void OnOpen()
@@ -90,7 +112,10 @@ namespace MessagePassing
                         //Foreach command in the same service
                         foreach (ExecuteCommand command in commands[i])
                         {
-                            API.Execute(command.Skin, command.CommandOnClose);
+                            //Use regular experssion to replace $Message$ since str.replace can only be case sensitive
+                            string replacedCommand = Regex.Replace(command.CommandOnMessage, "\\$error\\$", e.Reason, RegexOptions.IgnoreCase);
+                            //command.CommandOnMessage.Replace("$message$", e.Data);
+                            API.Execute(command.Skin, replacedCommand);
                         }
                     }
                     i++;
@@ -138,6 +163,7 @@ namespace MessagePassing
 
             string newCommandOnOpen = api.ReadString("OnOpen", "");
             string newCommandOnClose = api.ReadString("OnClose", "");
+            string newCommandOnMessage = api.ReadString("OnMessage", "");
             IntPtr mySkin = api.GetSkin();
             string myMeasure = api.GetMeasureName();
 
@@ -165,13 +191,14 @@ namespace MessagePassing
                                 isNewSkin = false;
                                 command.CommandOnOpen = newCommandOnOpen;
                                 command.CommandOnClose = newCommandOnClose;
+                                command.CommandOnMessage = newCommandOnMessage;
                             }
                         }
                     }
 
                     if (isNewSkin)
                     {
-                        commands[serviceLoc].Add(new ExecuteCommand(mySkin, myMeasure, newCommandOnOpen, newCommandOnClose));
+                        commands[serviceLoc].Add(new ExecuteCommand(mySkin, myMeasure, newCommandOnOpen, newCommandOnClose, newCommandOnMessage));
                     }
 
                 }
@@ -184,7 +211,7 @@ namespace MessagePassing
                 services.Add(myService);
 
                 //Add a new item in the top level (Services) of the list that contains a list of one command
-                commands.Add(new List<ExecuteCommand>(new ExecuteCommand[] { new ExecuteCommand(mySkin, myMeasure, newCommandOnOpen, newCommandOnClose) } ));
+                commands.Add(new List<ExecuteCommand>(new ExecuteCommand[] { new ExecuteCommand(mySkin, myMeasure, newCommandOnOpen, newCommandOnClose, newCommandOnMessage) } ));
 
                 //Start new service
                 wssv.AddWebSocketService<MessagePassing>(myService);
