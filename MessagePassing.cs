@@ -36,7 +36,6 @@ namespace MessagePassing
 
 
         public static WebSocketServer wssv;
-        public static string wsMessages = "";
         public static int instanceCount = 0;
         //private static string baseService = "/";
 
@@ -50,7 +49,6 @@ namespace MessagePassing
 
         //Still keep a copy of the measures service for future bangs
         private string myService = "/";
-        private int suppressErrors = 0;
 
         public class MessagePassing : WebSocketBehavior
         {
@@ -113,7 +111,7 @@ namespace MessagePassing
                         foreach (ExecuteCommand command in commands[i])
                         {
                             //Use regular experssion to replace $Message$ since str.replace can only be case sensitive
-                            string replacedCommand = Regex.Replace(command.CommandOnMessage, "\\$error\\$", e.Reason, RegexOptions.IgnoreCase);
+                            string replacedCommand = Regex.Replace(command.CommandOnClose, "\\$error\\$", e.Reason, RegexOptions.IgnoreCase);
                             //command.CommandOnMessage.Replace("$message$", e.Data);
                             API.Execute(command.Skin, replacedCommand);
                         }
@@ -216,9 +214,6 @@ namespace MessagePassing
                 //Start new service
                 wssv.AddWebSocketService<MessagePassing>(myService);
             }
-
-            //@TODO Give errors as output if suppress errors is not on
-            suppressErrors = api.ReadInt("SuppressErrors", 0);
         }
 
         internal void ExecuteBang(string args)
@@ -246,7 +241,7 @@ namespace MessagePassing
         internal string GetString()
         {
 
-            return wsMessages;
+            return "";
         }
 
 
