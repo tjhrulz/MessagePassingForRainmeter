@@ -8,8 +8,13 @@
     <script type="application/javascript">
         var reconnect;
         var lastID = "xJ6IoIBohbM";
-        var maxTimeDifference = 2;
-        var delayTime = 0;
+
+        //If time difference is bigger than this skip to correct section even if need to buffer
+        var maxTimeDifference = 1;
+        //If time difference is bigger than this skip to correct section only if no need to buffer
+        //Set bigger than maxTimeDifference to disable, you may want to do this is position can not be in ms
+        var minTimeDifference = 0.25;
+        var delayTime = 1;
 
         function open() {
             try {
@@ -67,11 +72,15 @@
             } else if (!event.data.isNaN) {
                 if (player.getPlayerState() == 1 || player.getPlayerState() == 2) {
                     var currTimeYoutube = player.getCurrentTime();
-                    var currTimeRainmeter = parseInt(event.data) + delayTime;
+                    var currTimeRainmeter = event.data;
+
+                    //console.log(currTimeRainmeter + ":" + currTimeYoutube);
 
                     if (currTimeYoutube > currTimeRainmeter + maxTimeDifference || currTimeYoutube < currTimeRainmeter - maxTimeDifference) {
                         //@TODO check if video is buffered that far, if it is not then maybe set it a bit ahead of actual time
-                        player.seekTo(currTimeRainmeter, true);
+                        player.seekTo(currTimeRainmeter + delayTime, true);
+                    } else if (currTimeYoutube > currTimeRainmeter + minTimeDifference || currTimeYoutube < currTimeRainmeter - minTimeDifference) {
+                        player.seekTo(currTimeRainmeter, false);
                     }
                 }
             } else {
