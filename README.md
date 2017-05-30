@@ -1,5 +1,6 @@
 # Message Passing for Rainmeter
 A websocket plugin for Rainmeter to allow communication with other programs such as Wallpaper Engine.
+Example of it in action: https://streamable.com/17mmz
 
 ### Current State:
  - Full support for multiple websocket addresses and multiple connections on each address
