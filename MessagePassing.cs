@@ -41,7 +41,7 @@ namespace MessagePassing
 
         //@TODO Combine all these lists?
         //List of current services, since services are kept alive this will only grow as more are declared
-        private static List<string> services = new List<string>();
+        public static List<string> services = new List<string>();
 
         //@TODO Add culling of skins that no longer exist (Or at least check if skin already exists so that dynamic variables can at least work)
         //A List of current services open and close command strings and the corresponding skin intptr in order of services
@@ -271,7 +271,6 @@ namespace MessagePassing
         public static void Finalize(IntPtr data)
         {
             Measure measure = (Measure)GCHandle.FromIntPtr(data).Target;
-            List<List<Measure.ExecuteCommand>> toRemove = new List<List<Measure.ExecuteCommand>>();
 
             for(int i = Measure.commands[measure.myServiceID].Count -1; i >=0; i--)
             {
@@ -286,6 +285,8 @@ namespace MessagePassing
             {
                 Measure.wssv.Stop();
                 Measure.wssv = null;
+                Measure.services.Clear();
+                Measure.commands.Clear();
             }
             GCHandle.FromIntPtr(data).Free();
 
