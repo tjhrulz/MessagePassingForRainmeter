@@ -13,6 +13,8 @@ Example of it in action: https://streamable.com/17mmz
  - Support for changing the port
  - Readd support for every message also being sent on the / channel
  
+#### If you would like you can donate to support the plugin [here](https://www.paypal.me/tjhrulz)
+
  ## Measure Options
  - `Plugin=MessagePassing` - The name of the plugin is MessagePassing, any MessagePAssing measure will have the value of the number of clients connected to it
  - `Name` - Name of the service to run, adds / to the beginning if you do not.  
