@@ -16,7 +16,18 @@ IfMatch=Spotify
 IfMatchAction=[!WriteKeyValue Variables MPMode Spotify "#@#variables.ini"][!DisableMeasure MeasureGenre]
 IfMatch2=GPMDP
 IfMatchAction2=[!WriteKeyValue Variables MPMode GPMDP "#@#variables.ini"][!DisableMeasure MeasureGenre]
+IfMatch3=Web
+IfMatchAction3=[!WriteKeyValue Variables MPMode Web "#@#variables.ini"][!DisableMeasure MeasureGenre]
 IfNotMatchAction=[!WriteKeyValue Variables MPMode NowPlaying "#@#variables.ini"]
+UpdateDivider=-1
+
+[MeasureInvertVisualizer]
+Measure=Calc
+Formula=#InvertVisualizer#
+IfEqualValue=1
+IfEqualAction=[!SetOption ScriptFactoryBars Value3 "MeasureAudioSmoothed{#BarCount# - %% - 1}"][!UpdateMeasure "ScriptFactoryBars"][!CommandMeasure "ScriptFactoryBars" "Initialize()"]
+IfBelowValue=1
+IfBelowAction=[!SetOption ScriptFactoryBars Value3 "MeasureAudioSmoothed{%%}"][!UpdateMeasure "ScriptFactoryBars"][!CommandMeasure "ScriptFactoryBars" "Initialize()"]
 UpdateDivider=-1
 
 [MeasureClipSongInformation]
@@ -124,3 +135,4 @@ IfTrueAction5=[!SetVariable Color "#GenreColor#"][!SetVariable TextColor "#Genre
 IfCondition6= (#EnableDynamicColors# = 2) && (#DisableDynamicFontColors# = 0)
 IfTrueAction6=[!SetVariable Color "[MeasureCoverColor]"][!SetVariable TextColor "[MeasureCoverColor]"][!SetOptionGroup GroupDynamicColors DynamicVariables "0"]
 UpdateDivider=-1
+DynamicVariables=1
