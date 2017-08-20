@@ -36,9 +36,10 @@ UpdateDivider=50
 [MeasureCoverAbs]
 Measure=Plugin
 Plugin=WebNowPlaying
-PlayerType=COVER
+PlayerType=CoverWebAddress
 Substitute="":"#@#images\nocover.png"
 DynamicVariables=1
+UpdateDivider=50
 
 [MeasurePosition]
 Measure=Plugin

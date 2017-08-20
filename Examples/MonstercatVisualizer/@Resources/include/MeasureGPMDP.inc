@@ -40,6 +40,7 @@ Plugin=GPMDPPlugin
 PlayerInfo=CoverWebAddress
 Substitute="":"#@#images\nocover.png"
 DynamicVariables=1
+UpdateDivider=50
 
 [MeasurePosition]
 Measure=Plugin
